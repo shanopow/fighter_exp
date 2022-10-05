@@ -1,0 +1,18 @@
+Leather Helmet
+head
+1
+Leather Chestplate
+chest
+1
+Leather Braces
+arms
+1
+Leather Leggings
+legs
+1
+Leather Boots
+feet
+1
+Iron Plate Sabatons
+feet
+2
