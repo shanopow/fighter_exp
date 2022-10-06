@@ -68,6 +68,22 @@ class Player(object):
     def __str__(self):
         return ("{} {} {} {} {}\n{}\n{}".format(self.name, self.atk, self.defen, self.hp, self.inv, self.weapon, self.armour))
 
+    def damage_taken(self, enemies):
+        for item in enemies:
+            # no damage
+            if self.defen >= (item.atk):
+                print("We took no damage from", item.name)
+            else:
+                self.hp = self.hp - (item.atk- self.defen)
+                # took damage
+                if self.hp <= 0:
+                    print("You have no health left, you died!")
+                    return False
+                else:
+                    print("We took: {} damage from {} and have {} health left".format(item.atk - self.defen, item.name, self.hp))
+        return True
+
+
 # Function for generating the enemy roster for a room
 # General case, Boss Rooms need separate function
 # No inclusion of weight, see issue with reading in unit_builder

@@ -41,7 +41,7 @@ usr_name = welcome_wagon()
 units = u_builder("units.txt") # Order doesn't matter here, add in any order you want
 weapons = weapon_builder("weapons.txt") # Last weapon chosen, so default for character is last in .txt
 armour = armour_builder("armour.txt") # Last five armour pieces in list are defaults for starting character
-armour.reverse() # reverse armour list so now first five choice in list are defaults 
+armour.reverse() # Reverse armour list so now first five choice in list are defaults 
 
 # Player init
 main_play = Player(usr_name, "100", "1", "10", ["Apple", "Banana", "Apple"], weapons[-1],armour[0:5])
@@ -68,6 +68,8 @@ while True:
         # Defending Phase
         line_breaker(0, "Defending Phase:")
         # FUNC FOR UNITS ATTACKING PLAYER GOES HERE
+        main_play.damage_taken(first_room)
+
         # End Turn
         cont = input("_" * 50 + "\n End turn? ")
         clear()
