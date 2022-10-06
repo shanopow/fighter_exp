@@ -1,5 +1,6 @@
 # Imports of py modules
 import random
+import copy
 
 # Class of enemies
 class Unit(object):
@@ -11,17 +12,14 @@ class Unit(object):
     
     def __str__(self):
         return ("{} {} {} {}".format(self.name, self.atk, self.defen, self.hp))
-    
-    # FATAL ERROR, THE KAMINO EFFECT
-    # WHEN CREATING ROOMS, DAMAGE AGAINST ONE MEANS DAMAGE AGAINST ALL
-    # ENEMIES NEED TO BE INDIVIDUALS, NOT CLONES 
-    # (SOLUTION) MAYBE CREATE NEW OBJS WHEN RUNNING THE ROOM-BUILDER, THIS VERY BAD THOUGH
+
+    # damage taken calculator (basic calulation, need more work with defence values)
     def damage_take(self, other):
-        if self.defen >= other.atk:
+        if self.defen >= (other.atk * other.weapon.damage):
             print("They took no damage!")
             return
         else:
-            self.hp = self.hp - (other.atk - self.defen)
+            self.hp = self.hp - ((other.atk * other.weapon.damage) - self.defen)
             print("They took: {} damage and have {} health left".format(other.atk - self.defen, self.hp))
 
 # Class for weapons
@@ -68,7 +66,7 @@ def enemy_roster(room_size, units):
     while len(roster) < room_size:
         choice = random.randint(1, len(units))
         choice = choice - 1
-        roster.append(units[choice])
+        roster.append(copy.deepcopy(units[choice]))
     return roster
 
 # Function for showing current enemies
