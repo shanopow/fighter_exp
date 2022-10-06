@@ -20,9 +20,9 @@ def  line_breaker(choice=2, taken=""):
     else:
         # 0 on top, 1 on bottom
         if choice == 0:
-            print("_" * 35 + "\n" + taken)
+            print("_" * 50 + "\n" + taken)
         elif choice == 1:
-            print(taken + "\n" + "_" * 35)
+            print(taken + "\n" + "_" * 50)
         else:
             print(taken)
 
@@ -44,29 +44,35 @@ armour = armour_builder("armour.txt") # Last five armour pieces in list are defa
 armour.reverse() # reverse armour list so now first five choice in list are defaults 
 
 # Player init
-main_play = Player(usr_name, "1", "1", "10", ["Apple", "Banana", "Apple"], weapons[-1],armour[0:5])
-
+main_play = Player(usr_name, "100", "1", "10", ["Apple", "Banana", "Apple"], weapons[-1],armour[0:5])
 # Turn counter
 turn = 0
 junk = input("Press any key to continue: ")
 clear()
-
 # NOT FINAL SECTION JUST FOR ONE TRAINING ROOM, WILL MOVE TO FUNC LATER
 line_breaker(1, "Welcome to the training room.")
-first_room = enemy_roster(10, units)
+first_room = enemy_roster(4, units)
 
 # Where the fun begins
 while True:
+    # Repeating each turn
     line_breaker(1, "Turn: " + str(turn))
     enemy_shower(first_room)
-    line_breaker()
-    #Attacking phase
-    print("Attack phase:")
-    att_choice = int(input("Choose who you would like to attack: "))
-    first_room[att_choice].damage_take(main_play)
-    # Defending Phase
-    line_breaker(0, "Defending Phase:")
-    # End Turn
-    cont = input("_" * 50 + "\n End turn? ")
-    clear()
+    
+    # Attacking phase
+    line_breaker(0, "Attack Phase: ")
+    if len(first_room) >= 1:
+        att_choice = int(input("Choose who you would like to attack: "))
+        first_room[att_choice].damage_take(main_play, first_room)
+    
+        # Defending Phase
+        line_breaker(0, "Defending Phase:")
+        # FUNC FOR UNITS ATTACKING PLAYER GOES HERE
+        # End Turn
+        cont = input("_" * 50 + "\n End turn? ")
+        clear()
+    #finished the room
+    else:
+        line_breaker(0, "You have beaten this room, well done!\nToo bad the line ends here for now. Goodbye!")
+        quit()
     turn += 1

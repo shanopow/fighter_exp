@@ -14,13 +14,24 @@ class Unit(object):
         return ("{} {} {} {}".format(self.name, self.atk, self.defen, self.hp))
 
     # damage taken calculator (basic calulation, need more work with defence values)
-    def damage_take(self, other):
+    def damage_take(self, other, holder):
+        # no damage
         if self.defen >= (other.atk * other.weapon.damage):
             print("They took no damage!")
             return
         else:
             self.hp = self.hp - ((other.atk * other.weapon.damage) - self.defen)
-            print("They took: {} damage and have {} health left".format(other.atk - self.defen, self.hp))
+            # killed enemy
+            if self.hp <= 0:
+                print("You have destroyed them!")
+                # BAD WAY OF FINDING OBJECT TO DELETE, NEED BETTER WAY OF INDEXING TO IT
+                for count, item in enumerate(holder):
+                    if item is self:
+                        holder.pop(count)
+                        break
+            # normal damage calulations
+            else:
+                print("They took: {} damage and have {} health left".format(other.atk - self.defen, self.hp))
 
 # Class for weapons
 class Weapon(object):
