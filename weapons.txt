@@ -1,3 +1,12 @@
+Galaxy Sword
+Blade
+15
+Galaxy Hammer
+Blunt
+15
+Iron Shortsword
+Blade
+2
 Broken Shortsword
 Blade
 1

@@ -12,7 +12,7 @@ def clear():
     if name == 'nt':
         _ = system('cls')
 
-# Func, printing breaks with content as first line (Needs start line as prog cant print like that)
+# Func, printing breaks
 def  line_breaker(choice=2, taken=""):
     #empty
     if taken == "":
@@ -51,17 +51,16 @@ junk = input("Press any key to continue: ")
 clear()
 # NOT FINAL SECTION JUST FOR ONE TRAINING ROOM, WILL MOVE TO FUNC LATER
 line_breaker(1, "Welcome to the training room.")
-first_room = enemy_roster(20, units)
+first_room = enemy_roster(1, units)
 
 # Where the fun begins
 while True:
     # Repeating each turn
     line_breaker(1, "Turn: " + str(turn))
     enemy_shower(first_room)
-    
     # Attacking phase
-    line_breaker(0, "Attack Phase: ")
     if len(first_room) >= 1:
+        line_breaker(0, "Attack Phase: ")
         att_choice = int(input("Choose who you would like to attack: "))
         first_room[att_choice].damage_take(main_play, first_room)
     
@@ -75,9 +74,21 @@ while True:
         # End Turn
         cont = input("_" * 50 + "\n End turn? ")
         clear()
-    #Finished the room
-    # CHAINING ROOMS GOES HERE, LOOT CHEST BEFORE
     else:
+        #Finished the room, loot
+        line_breaker(0, "Here is your loot:")
+        a = chest_builder("training room", False, weapons, armour)
+        for item in a.contents:
+            print(item)
+        line_breaker(0, "Please choose an item or skip")
+        loot_choice = input("Would you like to choose item 1, item 2, or skip? (1/2/3) ")
+        if loot_choice == "1":
+            main_play.weapon = a.contents[0]
+        if loot_choice == "2":
+            main_play.armour = a.contents[1]
+        # Chaining rooms goes here
+        
+        #tmp
         line_breaker(0, "You have beaten this room, well done!\nToo bad the line ends here for now. Goodbye!")
         quit()
     turn += 1

@@ -18,7 +18,7 @@ def object_builder(data, j):
     big = []
     for item in data:
         if i % j == 0:
-            adder = Unit(data[i - 4].strip(), data[i - 3].strip(), data[i - 2].strip(), data[i - 1].strip())
+            adder = Unit(data[i - 4].strip(), data[i - 3].strip(), data[i - 2].strip(), data[i - 1].strip()) # maybe want to rewrite this as a loop, going backward?
             big.append(adder)
         i += 1
     return big

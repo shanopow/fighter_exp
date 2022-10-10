@@ -4,13 +4,13 @@ import copy
 
 # Class of loot chests
 class Chest(object):
-    def __init__(self, id, room, contents, is_boss):
-        self.id  = id
+    def __init__(self, room, contents, is_boss):
         self.room = room
         self.contents = contents
         self.is_boss = is_boss
     
-    def __str__(self)
+    def __str__(self):
+        return "This chest contains {}".format(self.contents)
 
 
 # Class of enemies
@@ -116,7 +116,10 @@ def enemy_shower(enemy_list):
     for count, item in enumerate(enemy_list):
         print("{}.  {:<15}  |  Health: {}".format(count, item.name, item.hp))
 
-
-def chest_builder(id, room, is_boss):
-    
-    
+# for building loot of chest and adding as an object
+# WOULD LIKE TO ADD WEIGHTING TO MAKING THE LOOT IN THE CHEST, FOR NOW ASSUMES EQUAL WEIGHTING
+def chest_builder(room, is_boss, weapons, armour):
+    loot_table = []
+    loot_table.append( weapons[random.randint(0, len(weapons)) - 1] )
+    loot_table.append( armour[random.randint(0, len(armour)) - 1] )
+    return Chest(room, loot_table, is_boss)
