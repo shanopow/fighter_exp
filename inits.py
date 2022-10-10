@@ -2,6 +2,17 @@
 import random
 import copy
 
+# Class of loot chests
+class Chest(object):
+    def __init__(self, id, room, contents, is_boss):
+        self.id  = id
+        self.room = room
+        self.contents = contents
+        self.is_boss = is_boss
+    
+    def __str__(self)
+
+
 # Class of enemies
 class Unit(object):
     def __init__(self, name, atk, defen, hp):
@@ -87,7 +98,9 @@ class Player(object):
 # Function for generating the enemy roster for a room
 # General case, Boss Rooms need separate function
 # No inclusion of weight, see issue with reading in unit_builder
-# Room size <-> amount of enemies, units <-> list of unit objects to pick from
+# Room size: amount of enemies
+# Units: list of unit objects to pick from
+
 def enemy_roster(room_size, units):
     roster = []
     while len(roster) < room_size:
@@ -102,3 +115,8 @@ def enemy_shower(enemy_list):
     print("You are fighting these enemies:")
     for count, item in enumerate(enemy_list):
         print("{}.  {:<15}  |  Health: {}".format(count, item.name, item.hp))
+
+
+def chest_builder(id, room, is_boss):
+    
+    

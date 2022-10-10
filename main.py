@@ -51,7 +51,7 @@ junk = input("Press any key to continue: ")
 clear()
 # NOT FINAL SECTION JUST FOR ONE TRAINING ROOM, WILL MOVE TO FUNC LATER
 line_breaker(1, "Welcome to the training room.")
-first_room = enemy_roster(4, units)
+first_room = enemy_roster(20, units)
 
 # Where the fun begins
 while True:
@@ -67,13 +67,16 @@ while True:
     
         # Defending Phase
         line_breaker(0, "Defending Phase:")
-        # FUNC FOR UNITS ATTACKING PLAYER GOES HERE
-        main_play.damage_taken(first_room)
+        # Taking damage
+        killed_check = main_play.damage_taken(first_room)
+        if killed_check is False:
+            quit()
 
         # End Turn
         cont = input("_" * 50 + "\n End turn? ")
         clear()
-    #finished the room
+    #Finished the room
+    # CHAINING ROOMS GOES HERE, LOOT CHEST BEFORE
     else:
         line_breaker(0, "You have beaten this room, well done!\nToo bad the line ends here for now. Goodbye!")
         quit()

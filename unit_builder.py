@@ -1,4 +1,4 @@
-from inits import Unit, Weapon, Armour
+from inits import Unit, Weapon, Armour, Chest
 # Cards using ? attributes
 # fragile, based on Arcomage card reader system
 
@@ -26,12 +26,11 @@ def object_builder(data, j):
     #a = object_builder(raw_data, 4)
     #return a
 
-# FUNC MIGHT HAVE PROB, ORDER IT READS IN NOT CONSISTENT WITH LINES WRITTEN IN .txt FILE
-# FUNC WILL BE INCOSISTENT THEN WHEN PROBABILTIY AND WEIGHTING INVOLVED
+# Order does matter here, cant remember exact details figure it out later
 # For reading in units
 def u_builder(file_name):
     data = file_reader(file_name)
-    #generic quick fix
+    # generic quick fix
     i = 0
     big = []
     for item in data:
