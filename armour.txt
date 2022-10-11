@@ -1,18 +1,24 @@
 Leather Helmet
 head
 1
+2
 Leather Chestplate
 chest
 1
+2
 Leather Braces
 arms
 1
+2
 Leather Leggings
 legs
 1
+2
 Leather Boots
 feet
 1
+2
 Iron Plate Sabatons
 feet
 2
+1

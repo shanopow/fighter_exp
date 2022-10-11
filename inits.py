@@ -1,6 +1,6 @@
 # Imports of py modules
-import random
 import copy
+import random
 
 # Class of loot chests
 class Chest(object):
@@ -15,14 +15,15 @@ class Chest(object):
 
 # Class of enemies
 class Unit(object):
-    def __init__(self, name, atk, defen, hp):
+    def __init__(self, name, atk, defen, hp, weight):
         self.name = name
         self.atk = int(atk)
         self.defen = int(defen)
         self.hp = int(hp)
+        self.weight = int(weight)
     
     def __str__(self):
-        return ("{} {} {} {}".format(self.name, self.atk, self.defen, self.hp))
+        return ("{} {} {} {} {}".format(self.name, self.atk, self.defen, self.hp, self.weight))
 
     # damage taken calculator (basic calulation, need more work with defence values)
     def damage_take(self, other, holder):
@@ -35,7 +36,7 @@ class Unit(object):
             # killed enemy
             if self.hp <= 0:
                 print("You have destroyed them!")
-                # BAD WAY OF FINDING OBJECT TO DELETE, NEED BETTER WAY OF INDEXING TO IT
+                # BAD WAY OF FINDING OBJECT TO DELETE, NEED BETTER WAY OF INDEXING DIRECTLY TO IT
                 for count, item in enumerate(holder):
                     if item is self:
                         holder.pop(count)
@@ -46,23 +47,25 @@ class Unit(object):
 
 # Class for weapons
 class Weapon(object):
-    def __init__(self, name, type, damage):
+    def __init__(self, name, type, damage, weight):
         self.name = name
         self.type = type
         self.damage = int(damage)
+        self.weight = int(weight)
     
     def __str__(self):
-        return ("{} {} {}".format(self.name, self.type, self.damage))
+        return ("{} {} {} {}".format(self.name, self.type, self.damage, self.weight))
 
 # Class for armour
 class Armour(object):
-    def __init__(self, name, type, protection):
+    def __init__(self, name, type, protection, weight):
         self.name = name
         self.type = type
         self.protection = int(protection)
+        self.weight = weight
 
     def __str__(self):
-        return ("{} {} {}".format(self.name, self.type, self.protection))
+        return ("{} {} {} {}".format(self.name, self.type, self.protection, self.weight))
 
 
 # Class for player stats
@@ -118,8 +121,11 @@ def enemy_shower(enemy_list):
 
 # for building loot of chest and adding as an object
 # WOULD LIKE TO ADD WEIGHTING TO MAKING THE LOOT IN THE CHEST, FOR NOW ASSUMES EQUAL WEIGHTING
+
 def chest_builder(room, is_boss, weapons, armour):
-    loot_table = []
-    loot_table.append( weapons[random.randint(0, len(weapons)) - 1] )
-    loot_table.append( armour[random.randint(0, len(armour)) - 1] )
-    return Chest(room, loot_table, is_boss)
+    total_items = weapons + armour
+    loot_weights = []
+    for item in total_items:
+        loot_weights.append(int(item.weight))
+    final_loot = random.choices(total_items,weights=loot_weights,k=3)
+    return Chest(room, final_loot, is_boss)

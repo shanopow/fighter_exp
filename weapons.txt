@@ -1,15 +1,20 @@
 Galaxy Sword
 Blade
 15
+1
 Galaxy Hammer
 Blunt
 15
+1
 Iron Shortsword
 Blade
+2
 2
 Broken Shortsword
 Blade
 1
+5
 Wooden Hammer
 Blunt
 1
+5

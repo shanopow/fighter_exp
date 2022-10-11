@@ -81,11 +81,6 @@ while True:
         for item in a.contents:
             print(item)
         line_breaker(0, "Please choose an item or skip")
-        loot_choice = input("Would you like to choose item 1, item 2, or skip? (1/2/3) ")
-        if loot_choice == "1":
-            main_play.weapon = a.contents[0]
-        if loot_choice == "2":
-            main_play.armour = a.contents[1]
         # Chaining rooms goes here
         
         #tmp

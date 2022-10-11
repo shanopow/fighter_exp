@@ -34,8 +34,8 @@ def u_builder(file_name):
     i = 0
     big = []
     for item in data:
-        if i % 4 == 0:
-            adder = Unit(data[i - 4].strip(), data[i - 3].strip(), data[i - 2].strip(), data[i - 1].strip())
+        if i % 5 == 0:
+            adder = Unit(data[i - 5].strip(), data[i - 4].strip(), data[i - 3].strip(), data[i - 2].strip(), data[i - 1].strip())
             big.append(adder)
         i += 1
     return big
@@ -50,8 +50,8 @@ def weapon_builder(file_name):
     i = 0
     big = []
     for item in data:
-        if i % 3 == 0:
-            adder = Weapon(data[i - 3].strip(), data[i - 2].strip(), data[i - 1].strip())
+        if i % 4 == 0:
+            adder = Weapon(data[i - 4].strip(), data[i - 3].strip(), data[i - 2].strip(), data[i - 1].strip())
             big.append(adder)
         i += 1
     return big
@@ -65,8 +65,8 @@ def armour_builder(file_name):
     i = 0
     big = []
     for item in data:
-        if i % 3 == 0:
-            adder = Armour(data[i - 3].strip(), data[i - 2].strip(), data[i - 1].strip())
+        if i % 4 == 0:
+            adder = Armour(data[i - 4].strip(), data[i - 3].strip(), data[i - 2].strip(), data[i - 1].strip())
             big.append(adder)
         i += 1
     return big
