@@ -15,15 +15,15 @@ class Chest(object):
 
 # Class of enemies
 class Unit(object):
-    def __init__(self, name, atk, defen, hp, weight):
-        self.name = name
-        self.atk = int(atk)
-        self.defen = int(defen)
-        self.hp = int(hp)
-        self.weight = int(weight)
+    def __init__(self, holder):
+        self.name = holder[0]
+        self.atk = int(holder[1])
+        self.defen = int(holder[2])
+        self.hp = int(holder[3])
+        self.weight = int(holder[4])
     
     def __str__(self):
-        return ("{} {} {} {} {}".format(self.name, self.atk, self.defen, self.hp, self.weight))
+        return ("{} {} {} {} ({})".format(self.name, self.atk, self.defen, self.hp, self.weight))
 
     # damage taken calculator (basic calulation, need more work with defence values)
     def damage_take(self, other, holder):
@@ -47,38 +47,38 @@ class Unit(object):
 
 # Class for weapons
 class Weapon(object):
-    def __init__(self, name, type, damage, weight):
-        self.name = name
-        self.type = type
-        self.damage = int(damage)
-        self.weight = int(weight)
+    def __init__(self, holder):
+        self.name = holder[0]
+        self.i_type = holder[1]
+        self.damage = int(holder[2])
+        self.weight = int(holder[3])
     
     def __str__(self):
-        return ("{} {} {} {}".format(self.name, self.type, self.damage, self.weight))
+        return ("{: <20} {: <10} {} ({})".format(self.name, self.i_type, self.damage, self.weight))
 
 # Class for armour
 class Armour(object):
-    def __init__(self, name, type, protection, weight):
-        self.name = name
-        self.type = type
-        self.protection = int(protection)
-        self.weight = weight
+    def __init__(self, holder):
+        self.name = holder[0]
+        self.i_type = holder[1]
+        self.protection = int(holder[2])
+        self.weight = holder[3]
 
     def __str__(self):
-        return ("{} {} {} {}".format(self.name, self.type, self.protection, self.weight))
+        return ("{: <20} {: <10} {} ({})".format(self.name, self.i_type, self.protection, self.weight))
 
 
 # Class for player stats
 class Player(object):
-    def __init__(self, name, atk, defen, hp, inv, weapon, armour):
-        self.name = name
-        self.atk = int(atk)
-        self.defen = int(defen)
-        self.hp = int(hp)
-        self.inv = inv
-        self.weapon = weapon
-        self.armour = armour
-    
+    def __init__(self, holder):
+        self.name = holder[0]
+        self.atk = int(holder[1])
+        self.defen = int(holder[2])
+        self.hp = int(holder[3])
+        self.inv = holder[4]
+        self.weapon = holder[5]
+        self.armour = holder[6]
+
     def __str__(self):
         return ("{} {} {} {} {}\n{}\n{}".format(self.name, self.atk, self.defen, self.hp, self.inv, self.weapon, self.armour))
 
@@ -115,17 +115,19 @@ def enemy_roster(room_size, units):
 # Function for showing current enemies
 # Player showing kept seperate
 def enemy_shower(enemy_list):
-    print("You are fighting these enemies:")
-    for count, item in enumerate(enemy_list):
-        print("{}.  {:<15}  |  Health: {}".format(count, item.name, item.hp))
+    if len(enemy_list) <= 0:
+        print("This room is empty.....") # shower only if room now empty
+    else:
+        print("You are fighting these enemies:")
+        for count, item in enumerate(enemy_list):
+            # dont make names of enemies really long (like 100 chars) as breaks this format
+            print("{:<5}  {:<15}  |  Health: {}".format(str(count) + ".", item.name, item.hp))
 
 # for building loot of chest and adding as an object
-# WOULD LIKE TO ADD WEIGHTING TO MAKING THE LOOT IN THE CHEST, FOR NOW ASSUMES EQUAL WEIGHTING
-
 def chest_builder(room, is_boss, weapons, armour):
     total_items = weapons + armour
     loot_weights = []
     for item in total_items:
         loot_weights.append(int(item.weight))
-    final_loot = random.choices(total_items,weights=loot_weights,k=3)
+    final_loot = random.choices(total_items, weights=loot_weights, k=3)
     return Chest(room, final_loot, is_boss)

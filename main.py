@@ -2,6 +2,7 @@
 from os import system, name
 import random
 import time
+import sys
 # File imports
 from unit_builder import *
 from inits import *
@@ -13,7 +14,7 @@ def clear():
         _ = system('cls')
 
 # Func, printing breaks
-def  line_breaker(choice=2, taken=""):
+def line_breaker(choice=2, taken=""):
     #empty
     if taken == "":
         print("")
@@ -23,11 +24,15 @@ def  line_breaker(choice=2, taken=""):
             print("_" * 50 + "\n" + taken)
         elif choice == 1:
             print(taken + "\n" + "_" * 50)
+        elif choice == 3:
+            print("_" * 50 + "\n" + taken + "\n" + "_" * 50)
         else:
             print(taken)
 
 
-# Welcome, intro map
+# enable to skip
+power_user = False
+# Welcome
 def welcome_wagon():
     line_breaker()
     line_breaker(1, "Welcome to exp!")
@@ -36,23 +41,32 @@ def welcome_wagon():
     return usr_name
 
 # Running funcs to intro
-# Reading in lists 
-usr_name = welcome_wagon()
-units = u_builder("units.txt") # Order doesn't matter here, add in any order you want
-weapons = weapon_builder("weapons.txt") # Last weapon chosen, so default for character is last in .txt
-armour = armour_builder("armour.txt") # Last five armour pieces in list are defaults for starting character
+# Reading in lists
+if power_user is True:
+    usr_name = welcome_wagon()
+    junk = input("Press any key to continue: ")
+else:
+    usr_name = "Shane"
+units = object_builder("units.txt", 5, "__main__.Unit") # Order doesn't matter here, add in any order you want
+weapons = object_builder("weapons.txt", 4, "__main__.Weapon") # Last weapon chosen, so default for character is last in .txt
+armour = object_builder("armour.txt", 4, "__main__.Armour") # Last five armour pieces in list are defaults for starting character
 armour.reverse() # Reverse armour list so now first five choice in list are defaults 
 
 # Player init
-main_play = Player(usr_name, "100", "1", "10", ["Apple", "Banana", "Apple"], weapons[-1],armour[0:5])
+main_play = Player([usr_name, "100", "1", "10", ["Apple", "Banana", "Apple"], weapons[-1],armour[0:5]])
 # Turn counter
 turn = 0
-junk = input("Press any key to continue: ")
 clear()
+heat = 0
 # NOT FINAL SECTION JUST FOR ONE TRAINING ROOM, WILL MOVE TO FUNC LATER
 line_breaker(1, "Welcome to the training room.")
-first_room = enemy_roster(1, units)
-
+# creating rooms
+first_room = enemy_roster(0, units)
+# heat counter, ran after room generation
+old_heat = heat
+for item in first_room:
+    if item.weight > 10:
+        heat += item.weight
 # Where the fun begins
 while True:
     # Repeating each turn
@@ -61,9 +75,11 @@ while True:
     # Attacking phase
     if len(first_room) >= 1:
         line_breaker(0, "Attack Phase: ")
-        att_choice = int(input("Choose who you would like to attack: "))
-        first_room[att_choice].damage_take(main_play, first_room)
-    
+        att_choice = input("Choose who you would like to attack: ")
+        # taking / checking input s
+        if att_choice.isdecimal() is True:
+            first_room[int(att_choice)].damage_take(main_play, first_room)
+
         # Defending Phase
         line_breaker(0, "Defending Phase:")
         # Taking damage
@@ -75,15 +91,22 @@ while True:
         cont = input("_" * 50 + "\n End turn? ")
         clear()
     else:
-        #Finished the room, loot
+        # Finished the room, loot
         line_breaker(0, "Here is your loot:")
         a = chest_builder("training room", False, weapons, armour)
-        for item in a.contents:
-            print(item)
-        line_breaker(0, "Please choose an item or skip")
+        for count, item in enumerate(a.contents):
+            print("{}.   {}".format(count, item))
+        line_breaker(3, "Please choose an item or skip")
+        chosen_correct = False
+        while chosen_correct is False:
+            try:
+                chosen_one = int(input("Please choose an item."))
+                chosen_correct = True
+            except ValueError:
+                line_breaker(1, "Please enter the id of an item")
         # Chaining rooms goes here
-        
-        #tmp
+        line_breaker(0, "You heat has increased by: " + str(heat - old_heat))
+        # tmp
         line_breaker(0, "You have beaten this room, well done!\nToo bad the line ends here for now. Goodbye!")
         quit()
     turn += 1
