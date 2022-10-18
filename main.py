@@ -1,8 +1,7 @@
 # Imports
 from os import system, name
-import random
-import time
-import sys
+import random, sys, time
+
 # File imports
 from unit_builder import *
 from inits import *
@@ -13,7 +12,7 @@ def clear():
     if name == 'nt':
         _ = system('cls')
 
-# Func, printing breaks
+# Func, printing lines between text, replaces print
 def line_breaker(choice=2, taken=""):
     #empty
     if taken == "":
@@ -41,12 +40,13 @@ def welcome_wagon():
     return usr_name
 
 # Running funcs to intro
-# Reading in lists
 if power_user is True:
     usr_name = welcome_wagon()
     junk = input("Press any key to continue: ")
 else:
     usr_name = "Shane"
+
+# Running funcs to build lists of objects
 units = object_builder("units.txt", 5, "__main__.Unit") # Order doesn't matter here, add in any order you want
 weapons = object_builder("weapons.txt", 4, "__main__.Weapon") # Last weapon chosen, so default for character is last in .txt
 armour = object_builder("armour.txt", 4, "__main__.Armour") # Last five armour pieces in list are defaults for starting character
@@ -61,11 +61,12 @@ heat = 0
 # NOT FINAL SECTION JUST FOR ONE TRAINING ROOM, WILL MOVE TO FUNC LATER
 line_breaker(1, "Welcome to the training room.")
 # creating rooms
-first_room = enemy_roster(0, units)
+first_room = enemy_roster(5, units)
 # heat counter, ran after room generation
+# weight checker meant to simulate a bounty system, but 10 is arbitrary value, maybe beter griffin way?
 old_heat = heat
 for item in first_room:
-    if item.weight > 10:
+    if item.weight < 10:
         heat += item.weight
 # Where the fun begins
 while True:
@@ -91,21 +92,22 @@ while True:
         cont = input("_" * 50 + "\n End turn? ")
         clear()
     else:
-        # Finished the room, loot
+        # Finished the room, heat, loot
+        line_breaker(0, "You heat has increased by: " + str(heat - old_heat))
+        line_breaker(0, "You heat is now: " + str(heat))
         line_breaker(0, "Here is your loot:")
         a = chest_builder("training room", False, weapons, armour)
         for count, item in enumerate(a.contents):
             print("{}.   {}".format(count, item))
-        line_breaker(3, "Please choose an item or skip")
+        line_breaker(3, "Please choose an item or skip.")
         chosen_correct = False
         while chosen_correct is False:
             try:
-                chosen_one = int(input("Please choose an item."))
+                chosen_one = int(input("Please choose an item. "))
                 chosen_correct = True
             except ValueError:
                 line_breaker(1, "Please enter the id of an item")
         # Chaining rooms goes here
-        line_breaker(0, "You heat has increased by: " + str(heat - old_heat))
         # tmp
         line_breaker(0, "You have beaten this room, well done!\nToo bad the line ends here for now. Goodbye!")
         quit()

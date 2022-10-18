@@ -20,7 +20,7 @@ def get_class(kls):
         m = getattr(m, comp)            
     return m
 
-# Combines above 2 funcs 
+# Combines above 2 funcs run this one in all cases
 def object_builder(file_name, j, class_type):
     data = file_reader(file_name)
     D = get_class(class_type)

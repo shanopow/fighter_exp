@@ -9,7 +9,7 @@ Blunt
 Iron Shortsword
 Blade
 2
-2
+3
 Broken Shortsword
 Blade
 1

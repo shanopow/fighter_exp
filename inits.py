@@ -21,11 +21,12 @@ class Unit(object):
         self.defen = int(holder[2])
         self.hp = int(holder[3])
         self.weight = int(holder[4])
-    
+
     def __str__(self):
         return ("{} {} {} {} ({})".format(self.name, self.atk, self.defen, self.hp, self.weight))
 
-    # damage taken calculator (basic calulation, need more work with defence values)
+    # damage taken calculator
+    # basic calulation, need more work with defence values
     def damage_take(self, other, holder):
         # no damage
         if self.defen >= (other.atk * other.weapon.damage):
@@ -100,16 +101,20 @@ class Player(object):
 
 # Function for generating the enemy roster for a room
 # General case, Boss Rooms need separate function
-# No inclusion of weight, see issue with reading in unit_builder
 # Room size: amount of enemies
 # Units: list of unit objects to pick from
 
 def enemy_roster(room_size, units):
+    # make list of weights for generating rooms
+    unit_weights = []
+    for item in units:
+        unit_weights.append(item.weight)
+    
     roster = []
     while len(roster) < room_size:
-        choice = random.randint(1, len(units))
-        choice = choice - 1
-        roster.append(copy.deepcopy(units[choice]))
+        choice = random.choices(units, weights=unit_weights, k=1)
+        for item in choice:
+            roster.append(copy.deepcopy(item))
     return roster
 
 # Function for showing current enemies
@@ -121,7 +126,7 @@ def enemy_shower(enemy_list):
         print("You are fighting these enemies:")
         for count, item in enumerate(enemy_list):
             # dont make names of enemies really long (like 100 chars) as breaks this format
-            print("{:<5}  {:<15}  |  Health: {}".format(str(count) + ".", item.name, item.hp))
+            print("{:<5}  {:<15}  |  Health: {} {}".format(str(count) + ".", item.name, item.hp, item.weight))
 
 # for building loot of chest and adding as an object
 def chest_builder(room, is_boss, weapons, armour):
