@@ -1,5 +1,6 @@
 from inits import Unit, Weapon, Armour, Chest
 import sys
+import random
 # Cards using ? attributes
 # fragile, based on Arcomage card reader system
 # Can read any classes, just need to know the class name, module etc 
@@ -35,3 +36,12 @@ def object_builder(file_name, j, class_type):
             obj_at_time = []
         i += 1
     return big
+
+
+# for initially creating items in inventory
+def initial_inv_builder(holder):
+    tot_weights = []
+    for items in holder:
+        tot_weights.append(items.weight)
+    final_inv = random.choices(holder, weights=tot_weights, k=3)
+    return final_inv

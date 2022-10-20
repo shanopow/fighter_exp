@@ -68,6 +68,15 @@ class Armour(object):
     def __str__(self):
         return ("{: <20} {: <10} {} ({})".format(self.name, self.i_type, self.protection, self.weight))
 
+# Class for food in inventory
+class Food(object):
+    def __init__(self, holder):
+        self.name = holder[0]
+        self.healing = holder[1]
+        self.weight = int(holder[2])
+
+    def __str__(self):
+        return "{} {} | {}".format(self.name, self.healing, self.weight)
 
 # Class for player stats
 class Player(object):
@@ -91,7 +100,7 @@ class Player(object):
             else:
                 self.hp = self.hp - (item.atk- self.defen)
                 # took damage
-                if self.hp <= 0:
+                if self.hp <= item.atk:
                     print("You have no health left, you died!")
                     return False
                 else:
@@ -126,11 +135,11 @@ def enemy_shower(enemy_list):
         print("You are fighting these enemies:")
         for count, item in enumerate(enemy_list):
             # dont make names of enemies really long (like 100 chars) as breaks this format
-            print("{:<5}  {:<15}  |  Health: {} {}".format(str(count) + ".", item.name, item.hp, item.weight))
+            print("{:<5}  {:<15}  |  Health: {:<5} {}".format(str(count) + ".", item.name, item.hp, item.weight))
 
 # for building loot of chest and adding as an object
-def chest_builder(room, is_boss, weapons, armour):
-    total_items = weapons + armour
+def chest_builder(room, is_boss, weapons, armour, food):
+    total_items = weapons + armour + food
     loot_weights = []
     for item in total_items:
         loot_weights.append(int(item.weight))

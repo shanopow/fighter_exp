@@ -1,0 +1,12 @@
+Apple
+1
+10
+Banana
+1
+10
+Pineapple
+2
+5
+Mango
+10
+1
