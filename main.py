@@ -1,11 +1,13 @@
 # Imports
 from os import system, name
 import random, sys, time
-
+from termcolor import colored
+import colorama
 # File imports
 from unit_builder import *
 from inits import *
 # Small funcs
+colorama.init(autoreset=True)
 # Func, clearing screen
 def clear():
     if name == 'nt':
@@ -18,12 +20,13 @@ def line_breaker(choice=2, taken=""):
         print("")
     else:
         # 0 on top, 1 on bottom
+        fill_line = colored("_" * 50, 'red')
         if choice == 0:
-            print("_" * 50 + "\n" + taken)
+            print(fill_line + "\n" + taken)
         elif choice == 1:
-            print(taken + "\n" + "_" * 50)
+            print(taken + "\n" + fill_line)
         elif choice == 3:
-            print("_" * 50 + "\n" + taken + "\n" + "_" * 50)
+            print(fill_line + "\n" + taken + "\n" + fill_line)
         else:
             print(taken)
 
@@ -35,17 +38,14 @@ def heat_updater(heat, first_room):
     for item in first_room:
         if heat > 1:
             calc = round((orig / item.weight) * 0.1, 2) # for changing heat meter
-            weight_calc = calc / 10 # for changing the weights of units
-            #print(calc)
-            #print("Weight is:", item.weight)
+            weight_calc = calc / 10 # for changing the weights of units, higher weight mens unit loses some chance of being picked
             heat -= calc
+            # item.weight change is not retained, as each is not a clone so we only change random, VERY BAD AS CAUSES MASS INCONSISTENCY
             if item.weight > weight_calc and item.weight > 1: 
                 item.weight -= weight_calc
             else:
                 # has reached min weight, keep at 1
                 item.weight = 1
-            #print("Heat is now:", heat)
-            #print("Weighting is now:", item.weight)
         else:
             # heat has reached min value, just correct back up to 0
             print("Correcting heat to 0")
@@ -80,19 +80,18 @@ armour.reverse() # Reverse armour list so now first five choice in list are defa
 # Player inits (ran once)
 initial_inv = initial_inv_builder(food)
 main_play = Player([usr_name, "100", "1", "10", [initial_inv], weapons[-1],armour[0:5]])
-turn = 0
 room_number = 0
-clear()
 heat = 100
-# NOT FINAL SECTION JUST FOR ONE TRAINING ROOM, WILL MOVE TO FUNC LATER
+
+# Where the fun begins
+clear()
 while True:
     line_breaker(1,"Room: " + str(room_number))
     # creating room
-    first_room = enemy_roster(3, units)
-
-    # Where the fun begins
+    first_room = enemy_roster(3, units, heat)
     old_heat = heat
     heat = heat_updater(old_heat, first_room)
+    turn = 0
     while True:
         # Repeating each turn
         line_breaker(1, "Turn: " + str(turn))
@@ -111,18 +110,18 @@ while True:
             killed_check = main_play.damage_taken(first_room)
             if killed_check is False:
                 quit()
-
             # End Turn
             cont = input("_" * 50 + "\n End turn? ")
             clear()
         else:
+            # stopping items with low weights from being picked at certain points
             # Finished the room, heat, loot
             line_breaker(0, "You heat has decreased by: " + str(round(old_heat - heat, 2)))
             line_breaker(0, "You heat is now: " + str(round(heat, 2)))
             line_breaker(0, "Here is your loot:")
             a = chest_builder("training room", False, weapons, armour, food)
             for count, item in enumerate(a.contents):
-                print("{}.   {}".format(count, item))
+                print("{}   {}".format(colored(str(count) + ".", 'yellow'), item))
             line_breaker(3, "Please choose an item or skip.")
             chosen_correct = False
             while chosen_correct is False:
@@ -131,10 +130,10 @@ while True:
                     main_play.inv.append(a.contents[chosen_one])
                     chosen_correct = True
                 except ValueError:
-                    line_breaker(1, "Please enter the id of an item")
+                    line_breaker(1, colored("Please enter a valid id", 'red'))
             # Chaining rooms goes here
             # tmp
-            line_breaker(0, "You have beaten this room, well done!\nThis should skip to next !")
+            line_breaker(0, "You have beaten this room, well done!\nThis should skip to next room now")
             time.sleep(2)
             clear()
             break

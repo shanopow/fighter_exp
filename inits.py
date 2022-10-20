@@ -1,7 +1,11 @@
 # Imports of py modules
 import copy
 import random
-
+from termcolor import colored
+import colorama
+from os import system
+# junk
+colorama.init(autoreset=True)
 # Class of loot chests
 class Chest(object):
     def __init__(self, room, contents, is_boss):
@@ -76,7 +80,7 @@ class Food(object):
         self.weight = int(holder[2])
 
     def __str__(self):
-        return "{} {} | {}".format(self.name, self.healing, self.weight)
+        return "{: <20} {: <10} ({})".format(self.name, self.healing, self.weight)
 
 # Class for player stats
 class Player(object):
@@ -113,17 +117,21 @@ class Player(object):
 # Room size: amount of enemies
 # Units: list of unit objects to pick from
 
-def enemy_roster(room_size, units):
+def enemy_roster(room_size, units, heat):
     # make list of weights for generating rooms
     unit_weights = []
     for item in units:
         unit_weights.append(item.weight)
-    
     roster = []
     while len(roster) < room_size:
-        choice = random.choices(units, weights=unit_weights, k=1)
-        for item in choice:
-            roster.append(copy.deepcopy(item))
+        got_good = False
+        while got_good is False:
+            # keep choosing until we find good unit to put in
+            choice = random.choices(units, weights=unit_weights, k=1)
+            if heat // choice[0].weight <= 100 // 5: 
+                # meets the weight threshold
+                got_good = True
+        roster.append(copy.deepcopy(choice[0]))
     return roster
 
 # Function for showing current enemies
@@ -132,10 +140,12 @@ def enemy_shower(enemy_list):
     if len(enemy_list) <= 0:
         print("This room is empty.....") # shower only if room now empty
     else:
-        print("You are fighting these enemies:")
+        print("    You are fighting these enemies:\n")
         for count, item in enumerate(enemy_list):
+            if count < 10 and len(enemy_list) > 9:
+                count = "0" + str(count)
             # dont make names of enemies really long (like 100 chars) as breaks this format
-            print("{:<5}  {:<15}  |  Health: {:<5} {}".format(str(count) + ".", item.name, item.hp, item.weight))
+            print("{:<5}  {:<15}  |  Health: {:<5} {}".format(colored(str(count) + ".",'yellow'), item.name, item.hp, item.weight))
 
 # for building loot of chest and adding as an object
 def chest_builder(room, is_boss, weapons, armour, food):

@@ -1,6 +1,11 @@
-from inits import Unit, Weapon, Armour, Chest
+# python imports
 import sys
 import random
+from termcolor import colored
+import colorama
+# file imports
+from inits import Unit, Weapon, Armour, Chest
+
 # Cards using ? attributes
 # fragile, based on Arcomage card reader system
 # Can read any classes, just need to know the class name, module etc 
