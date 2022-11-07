@@ -128,9 +128,8 @@ def enemy_roster(room_size, units, heat):
         while got_good is False:
             # keep choosing until we find good unit to put in
             choice = random.choices(units, weights=unit_weights, k=1)
-            if heat // choice[0].weight <= 100 // 5: 
-                # meets the weight threshold
-                got_good = True
+            print(choice[0].name)
+            got_good = True
         roster.append(copy.deepcopy(choice[0]))
     return roster
 

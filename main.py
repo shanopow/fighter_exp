@@ -30,27 +30,37 @@ def line_breaker(choice=2, taken=""):
         else:
             print(taken)
 
+# Func for generating list of unique units in room, used with heat_updater
+def unique_builder(room_units):
+    unique_holder = []
+    for item in room_units:
+        if item.name not in unique_holder:
+            unique_holder.append(item.name)
+    return unique_holder
+
+# NEED A LIST OF EACH UNIQUE NAME IN ROOM
 # Func for changing heat, ran when you generate a room
 # checks weights to simulate a bounty system, higher weights means less change to heat level
-def heat_updater(heat, first_room):
+def heat_updater(heat, uniques, units):
     orig = heat
     current_heat = heat
-    for item in first_room:
-        if heat > 1:
-            calc = round((orig / item.weight) * 0.1, 2) # for changing heat meter
-            weight_calc = calc / 10 # for changing the weights of units, higher weight mens unit loses some chance of being picked
-            heat -= calc
-            # item.weight change is not retained, as each is not a clone so we only change random, VERY BAD AS CAUSES MASS INCONSISTENCY
-            if item.weight > weight_calc and item.weight > 1: 
-                item.weight -= weight_calc
-            else:
-                # has reached min weight, keep at 1
-                item.weight = 1
-        else:
-            # heat has reached min value, just correct back up to 0
-            print("Correcting heat to 0")
-            heat = 0
-            return heat
+    for each in uniques:
+        for i in units:
+            if i.name == each:
+                calc = round((orig / i.weight) * 0.1, 2) # for changing heat meter
+                weight_calc = calc / 10 # for changing the weights of units, higher weight means unit loses some chance of being picked
+                heat -= calc
+                if heat > 10:
+                    if i.weight > weight_calc and i.weight > 1:
+                            # can be adjusted
+                            i.weight -= weight_calc
+                            i.weight = round(i.weight, 2)
+                    else:
+                        # has reached min weight, keep at 1
+                        i.weight = 1
+                else:
+                    print("Heat has reached its minimum, correcting to 10")
+                    return 10
     return heat
 
 # enables skipping setup
@@ -79,7 +89,7 @@ armour.reverse() # Reverse armour list so now first five choice in list are defa
 
 # Player inits (ran once)
 initial_inv = initial_inv_builder(food)
-main_play = Player([usr_name, "100", "1", "10", [initial_inv], weapons[-1],armour[0:5]])
+main_play = Player([usr_name, "100000000", "1000000", "100000000", [initial_inv], weapons[-1],armour[0:5]])
 room_number = 0
 heat = 100
 
@@ -89,8 +99,9 @@ while True:
     line_breaker(1,"Room: " + str(room_number))
     # creating room
     first_room = enemy_roster(3, units, heat)
+    unique_units = unique_builder(first_room)
     old_heat = heat
-    heat = heat_updater(old_heat, first_room)
+    heat = heat_updater(old_heat, unique_units, units)
     turn = 0
     while True:
         # Repeating each turn
