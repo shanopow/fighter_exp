@@ -1,11 +1,16 @@
-# Imports of py modules
+# Module Imports
 import copy
 import random
 from termcolor import colored
 import colorama
 from os import system
-# junk
+
+# Misc Imports
+# Colorama
+# This needed here?
 colorama.init(autoreset=True)
+
+# Class Definitions
 # Class of loot chests
 class Chest(object):
     def __init__(self, room, contents, is_boss):
@@ -15,7 +20,6 @@ class Chest(object):
     
     def __str__(self):
         return "This chest contains {}".format(self.contents)
-
 
 # Class of enemies
 class Unit(object):
@@ -30,7 +34,7 @@ class Unit(object):
         return ("{} {} {} {} ({})".format(self.name, self.atk, self.defen, self.hp, self.weight))
 
     # damage taken calculator
-    # basic calulation, need more work with defence values
+    # basic calulation, need more work with defence values (maybe copy fnv's dt system?)
     def damage_take(self, other, holder):
         # no damage
         if self.defen >= (other.atk * other.weapon.damage):
@@ -112,41 +116,78 @@ class Player(object):
         return True
 
 
+# Heat related functions
+# Functions for generating list of unique units in room, used with heat_updater
+def unique_builder(room_units):
+    unique_holder = []
+    for item in room_units:
+        if item.name not in unique_holder:
+            unique_holder.append(item.name)
+    return unique_holder
+
+# Function for changing heat, ran when you generate a room
+# Checks weights to simulate a bounty system, higher weights means less change to heat level
+def heat_updater(heat, uniques, units):
+    orig = heat
+    current_heat = heat
+    for each in uniques:
+        for i in units:
+            if i.name == each:
+                calc = round((orig / i.weight) * 0.1, 2) # for changing heat meter
+                weight_calc = calc / 10 # for changing the weights of units, higher weight means unit loses some chance of being picked
+                heat -= calc
+                if heat > 10:
+                    if i.weight > weight_calc and i.weight > 1:
+                            # can be adjusted
+                            i.weight -= weight_calc
+                            i.weight = round(i.weight, 2)
+                    else:
+                        # has reached min weight, keep at 1
+                        i.weight = 1
+                else:
+                    print("Heat has reached its minimum, correcting to 10")
+                    return 10
+    return heat
+
+
 # Function for generating the enemy roster for a room
 # General case, Boss Rooms need separate function
-# Room size: amount of enemies
-# Units: list of unit objects to pick from
-
 def enemy_roster(room_size, units, heat):
-    # make list of weights for generating rooms
     unit_weights = []
     for item in units:
         unit_weights.append(item.weight)
+    
     roster = []
     while len(roster) < room_size:
         got_good = False
         while got_good is False:
-            # keep choosing until we find good unit to put in
+            # Probably dont need this while got_good anymore,
+            # Was only needed for the weight limit system, which is now gone
             choice = random.choices(units, weights=unit_weights, k=1)
             print(choice[0].name)
             got_good = True
+        # Anti Kamino System
         roster.append(copy.deepcopy(choice[0]))
     return roster
 
 # Function for showing current enemies
-# Player showing kept seperate
+# Player showing kept separate
 def enemy_shower(enemy_list):
     if len(enemy_list) <= 0:
-        print("This room is empty.....") # shower only if room now empty
+        print("This room is empty.....") # prints when room is empty
     else:
         print("    You are fighting these enemies:\n")
         for count, item in enumerate(enemy_list):
             if count < 10 and len(enemy_list) > 9:
                 count = "0" + str(count)
             # dont make names of enemies really long (like 100 chars) as breaks this format
+            # Hate this solution, too fragile
             print("{:<5}  {:<15}  |  Health: {:<5} {}".format(colored(str(count) + ".",'yellow'), item.name, item.hp, item.weight))
 
-# for building loot of chest and adding as an object
+# Function for building chest with loot,
+# is_boss not implemented
+# Always 3 items for now, takes from weapon, armour, food
+# Customise this later
 def chest_builder(room, is_boss, weapons, armour, food):
     total_items = weapons + armour + food
     loot_weights = []

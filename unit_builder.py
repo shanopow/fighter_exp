@@ -1,14 +1,15 @@
-# python imports
+# Module Imports
 import sys
 import random
 from termcolor import colored
 import colorama
-# file imports
+
+# File imports
 from inits import Unit, Weapon, Armour, Chest
 
-# Cards using ? attributes
-# fragile, based on Arcomage card reader system
-# Can read any classes, just need to know the class name, module etc 
+# Based on Arcomage card reader system
+# Can read any classes, just need to know the class name, module etc
+# Used to build all objs, even inventory init (maybe move to other file)
 
 # opens and reads file into list, used in normal object builder, DO NOT USE ALONE
 def file_reader(file_name):
@@ -17,7 +18,7 @@ def file_reader(file_name):
     file.close()
     return raw_data
 
-# for converting name of class in str to actual class, used in normal object builder. DO NOT USE ALONE
+# for converting name of class in str to actual class, used in normal object builder, DO NOT USE ALONE
 def get_class(kls):
     parts = kls.split('.')
     module = ".".join(parts[:-1])

@@ -1,25 +1,31 @@
-# Imports
+# Module Imports
 from os import system, name
 import random, sys, time
 from termcolor import colored
 import colorama
+
 # File imports
 from unit_builder import *
 from inits import *
-# Small funcs
+
+# Misc functions
+# Colorama
 colorama.init(autoreset=True)
-# Func, clearing screen
+
+# Function for clearing screen
+# Windows exclusive (Linux Stinky) (Easy fix)
 def clear():
     if name == 'nt':
         _ = system('cls')
 
-# Func, printing lines between text, replaces print
+# Function for printing text with lines around,
+# Means no real need to use print randomly in main, avoids weird formatting
 def line_breaker(choice=2, taken=""):
     # print empty line if given nothing
     if taken == "":
         print("")
     else:
-        # 0 on top, 1 on bottom
+        # 0 for top, 1 for bottom, 3 for both
         fill_line = colored("_" * 50, 'red')
         if choice == 0:
             print(fill_line + "\n" + taken)
@@ -30,42 +36,11 @@ def line_breaker(choice=2, taken=""):
         else:
             print(taken)
 
-# Func for generating list of unique units in room, used with heat_updater
-def unique_builder(room_units):
-    unique_holder = []
-    for item in room_units:
-        if item.name not in unique_holder:
-            unique_holder.append(item.name)
-    return unique_holder
-
-# NEED A LIST OF EACH UNIQUE NAME IN ROOM
-# Func for changing heat, ran when you generate a room
-# checks weights to simulate a bounty system, higher weights means less change to heat level
-def heat_updater(heat, uniques, units):
-    orig = heat
-    current_heat = heat
-    for each in uniques:
-        for i in units:
-            if i.name == each:
-                calc = round((orig / i.weight) * 0.1, 2) # for changing heat meter
-                weight_calc = calc / 10 # for changing the weights of units, higher weight means unit loses some chance of being picked
-                heat -= calc
-                if heat > 10:
-                    if i.weight > weight_calc and i.weight > 1:
-                            # can be adjusted
-                            i.weight -= weight_calc
-                            i.weight = round(i.weight, 2)
-                    else:
-                        # has reached min weight, keep at 1
-                        i.weight = 1
-                else:
-                    print("Heat has reached its minimum, correcting to 10")
-                    return 10
-    return heat
-
+# All ran once here
 # enables skipping setup
 power_user = True
-# Welcome
+# Function for running welcomes,
+# Skipped with power_user
 def welcome_wagon():
     line_breaker()
     line_breaker(1, "Welcome to exp!")
@@ -73,26 +48,27 @@ def welcome_wagon():
     line_breaker(1, "Welcome, " + usr_name)
     return usr_name
 
-# Running funcs to intro
+# Running functions to intro
 if power_user is False:
     usr_name = welcome_wagon()
     junk = input("Press any key to continue: ")
 else:
     usr_name = "Shane"
 
-# Running funcs to build lists of objects
+# Running functions to build lists of objects
 units = object_builder("units.txt", 5, "__main__.Unit") # Order doesn't matter here, add in any order you want
 weapons = object_builder("weapons.txt", 4, "__main__.Weapon") # Last weapon chosen, so default for character is last in .txt
 armour = object_builder("armour.txt", 4, "__main__.Armour") # Last five armour pieces in list are defaults for starting character
 food = object_builder("food.txt", 3, "__main__.Food")
 armour.reverse() # Reverse armour list so now first five choice in list are defaults 
 
-# Player inits (ran once)
+# Final inits, player, food builder, heat 
 initial_inv = initial_inv_builder(food)
 main_play = Player([usr_name, "100000000", "1000000", "100000000", [initial_inv], weapons[-1],armour[0:5]])
 room_number = 0
 heat = 100
 
+# MAIN
 # Where the fun begins
 clear()
 while True:
