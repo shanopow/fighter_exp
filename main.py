@@ -13,10 +13,11 @@ from inits import *
 colorama.init(autoreset=True)
 
 # Function for clearing screen
-# Windows exclusive (Linux Stinky) (Easy fix)
 def clear():
     if name == 'nt':
         _ = system('cls')
+    else:
+        _ = system('clear')
 
 # Function for printing text with lines around,
 # Means no real need to use print randomly in main, avoids weird formatting
@@ -35,11 +36,18 @@ def line_breaker(choice=2, taken=""):
             print(fill_line + "\n" + taken + "\n" + fill_line)
         else:
             print(taken)
-
+# Functions dependant on line_breaker
+# Functions for printing end screen after beating room
+def end_screen(old_heat, heat):
+    line_breaker(0, "You heat has decreased by: " + str(round(old_heat - heat, 2)))
+    line_breaker(0, "You heat is now: " + str(round(heat, 2)))
+    line_breaker(0, "Here is your loot:")
+    
 # All ran once here
 # enables skipping setup
 power_user = True
 # Function for running welcomes,
+# Gets user-name
 # Skipped with power_user
 def welcome_wagon():
     line_breaker()
@@ -47,6 +55,7 @@ def welcome_wagon():
     usr_name = input("Enter your name here: ")
     line_breaker(1, "Welcome, " + usr_name)
     return usr_name
+
 
 # Running functions to intro
 if power_user is False:
@@ -70,6 +79,7 @@ heat = 100
 
 # MAIN
 # Where the fun begins
+# A ton of this needs to be moved to functions, maybe around input loops, choices, etc
 clear()
 while True:
     line_breaker(1,"Room: " + str(room_number))
@@ -101,11 +111,9 @@ while True:
             cont = input("_" * 50 + "\n End turn? ")
             clear()
         else:
+            end_screen(old_heat, heat)
             # stopping items with low weights from being picked at certain points
             # Finished the room, heat, loot
-            line_breaker(0, "You heat has decreased by: " + str(round(old_heat - heat, 2)))
-            line_breaker(0, "You heat is now: " + str(round(heat, 2)))
-            line_breaker(0, "Here is your loot:")
             a = chest_builder("training room", False, weapons, armour, food)
             for count, item in enumerate(a.contents):
                 print("{}   {}".format(colored(str(count) + ".", 'yellow'), item))

@@ -137,6 +137,7 @@ def heat_updater(heat, uniques, units):
                 weight_calc = calc / 10 # for changing the weights of units, higher weight means unit loses some chance of being picked
                 heat -= calc
                 if heat > 10:
+                    # still can reduce heat further
                     if i.weight > weight_calc and i.weight > 1:
                             # can be adjusted
                             i.weight -= weight_calc
@@ -159,13 +160,8 @@ def enemy_roster(room_size, units, heat):
     
     roster = []
     while len(roster) < room_size:
-        got_good = False
-        while got_good is False:
-            # Probably dont need this while got_good anymore,
-            # Was only needed for the weight limit system, which is now gone
-            choice = random.choices(units, weights=unit_weights, k=1)
-            print(choice[0].name)
-            got_good = True
+        choice = random.choices(units, weights=unit_weights, k=1)
+        print(choice[0].name)
         # Anti Kamino System
         roster.append(copy.deepcopy(choice[0]))
     return roster
