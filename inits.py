@@ -6,9 +6,6 @@ import colorama
 from os import system
 
 # Misc Imports
-# Colorama
-# This needed here?
-colorama.init(autoreset=True)
 
 # Class Definitions
 # Class of loot chests
@@ -97,24 +94,21 @@ class Player(object):
         self.weapon = holder[5]
         self.armour = holder[6]
 
-    def __str__(self):
-        return ("{} {} {} {} {}\n{}\n{}".format(self.name, self.atk, self.defen, self.hp, self.inv, self.weapon, self.armour))
-
     def damage_taken(self, enemies):
         for item in enemies:
-            # no damage
-            if self.defen >= (item.atk):
-                print("We took no damage from", item.name)
-            else:
-                self.hp = self.hp - (item.atk- self.defen)
-                # took damage
-                if self.hp <= item.atk:
+            fin_dam = max(item.atk - self.defen, item.atk * 0.2)
+            if self.hp <= item.atk:
                     print("You have no health left, you died!")
                     return False
-                else:
-                    print("We took: {} damage from {} and have {} health left".format(item.atk - self.defen, item.name, self.hp))
+            else:
+                # normal calc
+                self.hp -= fin_dam
+                print("We took: {} damage from {} and have {} health left".format(fin_dam, item.name, self.hp))
         return True
 
+def __str__(self):
+        return ("{} {} {} {} {}\n{}\n{}".format(self.name, self.atk, self.defen, self.hp, self.inv, self.weapon, self.armour))
+    
 
 # Heat related functions
 # Functions for generating list of unique units in room, used with heat_updater
@@ -161,7 +155,6 @@ def enemy_roster(room_size, units, heat):
     roster = []
     while len(roster) < room_size:
         choice = random.choices(units, weights=unit_weights, k=1)
-        print(choice[0].name)
         # Anti Kamino System
         roster.append(copy.deepcopy(choice[0]))
     return roster
